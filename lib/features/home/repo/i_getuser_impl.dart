@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:totalxproject/features/home/data/model/usermodel.dart';
@@ -13,8 +14,8 @@ class GetUserRepository {
   QueryDocumentSnapshot? lastDocs;
   Future<Either<String, List<UserModel>>> getUsers(AgeType ageType) async {
     try {
-      QuerySnapshot<Map<String,dynamic>> ref;
-      if (ageType == AgeType.all) {
+      QuerySnapshot<Map<String, dynamic>> ref;
+      if (ageType == AgeType.all) {// all data load
         ref = (lastDocs == null)
             ? await fire
                 .collection('users')
@@ -25,43 +26,38 @@ class GetUserRepository {
                 .collection('users')
                 .orderBy("createdAt", descending: true)
                 .startAfterDocument(lastDocs!)
-                .limit(5)
+                .limit(8)
                 .get();
-      } else if (ageType == AgeType.elder) {
+      } else if (ageType == AgeType.younger) {//younger list load
         ref = (lastDocs == null)
             ? await fire
                 .collection('users')
-                .orderBy("createdAt", descending: true)
                 .where("age", isLessThan: 60)
+                .orderBy("age", descending: false)
                 .limit(8)
                 .get()
             : await fire
                 .collection('users')
-                .orderBy("createdAt", descending: true)
                 .where("age", isLessThan: 60)
+                .orderBy("age", descending: false)
+                .startAfterDocument(lastDocs!)
                 .limit(8)
                 .get();
-        await fire
-            .collection('users')
-            .orderBy("createdAt", descending: true)
-            .where("age", isLessThan: 60)
-            .startAfterDocument(lastDocs!)
-            .limit(5)
-            .get();
       } else {
-        ref = (lastDocs == null)
+        ref = (lastDocs == null)//elder load
             ? await fire
                 .collection('users')
-                .orderBy("createdAt", descending: true)
-                .where('age', isGreaterThanOrEqualTo: 60)
+                .where("age", isGreaterThanOrEqualTo: 60)
+                 .orderBy("age", descending: true)
                 .limit(8)
                 .get()
             : await fire
                 .collection('users')
-                .orderBy("createdAt", descending: true)
+               
                 .where("age", isGreaterThanOrEqualTo: 60)
+                 .orderBy("age", descending: true)
                 .startAfterDocument(lastDocs!)
-                .limit(5)
+                .limit(8)
                 .get();
       }
       if (ref.docs.isEmpty) {
@@ -69,23 +65,9 @@ class GetUserRepository {
       } else {
         lastDocs = ref.docs.last;
         return right(ref.docs.map((e) => UserModel.fromMap(e.data())).toList());
-
       }
-      // final ref = (lastDocs == null)
-      //     ? await FirebaseFirestore.instance.collection("users").orderBy("createdAt",descending: true).limit(8).get()
-      //     : await FirebaseFirestore.instance
-      //         .collection("users")
-      //         .orderBy("createdAt",descending: true)
-      //         .startAfterDocument(lastDocs!)
-      //         .limit(5)
-      //         .get();
-      // if (ref.docs.isEmpty) {
-      //   return left("An error occured while geting users");
-      // } else {
-      //   lastDocs = ref.docs.last;
-      //   return right(ref.docs.map((e) => UserModel.fromMap(e.data())).toList());
-      // }
     } catch (e) {
+      log(e.toString());
       return left("An error occured while geting users");
     }
   }

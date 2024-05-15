@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:totalxproject/features/add_user/presentation/view/add_user.dart';
@@ -5,8 +6,7 @@ import 'package:totalxproject/features/home/presentation/provider/get_user_provi
 import 'package:totalxproject/features/home/presentation/view/widget/user_card.dart';
 
 import 'package:totalxproject/features/search/presentation/view/search_page.dart';
-import 'package:totalxproject/features/sort/presentation/provider/sort_provider.dart';
-import 'package:totalxproject/features/sort/presentation/view/sort.dart';
+import 'package:totalxproject/features/home/presentation/view/widget/sort.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -32,8 +32,8 @@ class HomePage extends StatelessWidget {
           backgroundColor: const Color.fromARGB(255, 233, 233, 233),
           body: Padding(
             padding: const EdgeInsets.all(13.0),
-            child: Consumer2<GetUserProvider, SortProvider>(
-              builder: (context, value, value2, child) {
+            child: Consumer<GetUserProvider>(
+              builder: (context, value, child) {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -117,7 +117,7 @@ class HomePage extends StatelessWidget {
                     Expanded(
                       child: value.userlist.isEmpty
                           ? const Center(
-                              child: CircularProgressIndicator(),
+                              child: CupertinoActivityIndicator(),
                             )
                           : ListView.separated(
                               controller: value.scrollController,
@@ -126,13 +126,9 @@ class HomePage extends StatelessWidget {
                                   height: 5,
                                 );
                               },
-                              itemCount: value2.isSorting
-                                  ? value2.sortlist.length
-                                  : value.userlist.length,
+                              itemCount: value.userlist.length,
                               itemBuilder: (context, index) {
-                                final data = value2.isSorting
-                                    ? value2.sortlist[index]
-                                    : value.userlist[index];
+                                final data = value.userlist[index];
                                 return Column(
                                   children: [
                                     Usercard(data: data),
@@ -140,7 +136,7 @@ class HomePage extends StatelessWidget {
                                         value.isMoreDataLoading)
                                       const Padding(
                                         padding: EdgeInsets.all(10),
-                                        child: CircularProgressIndicator(),
+                                        child: CupertinoActivityIndicator(),
                                       )
                                   ],
                                 );

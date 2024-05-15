@@ -7,10 +7,9 @@ import 'package:provider/provider.dart';
 import 'package:totalxproject/features/add_user/presentation/provider/add_user_provider.dart';
 import 'package:totalxproject/features/home/presentation/provider/get_user_provider.dart';
 import 'package:totalxproject/features/home/presentation/view/home_screen.dart';
-import 'package:totalxproject/features/login/presentation/provider/login_provider.dart';
-import 'package:totalxproject/features/otp/presentation/provider/otp_screen_provider.dart';
+import 'package:totalxproject/features/auth/presentation/provider/auth_provider.dart';
+
 import 'package:totalxproject/features/search/presentation/provider/search_provider.dart';
-import 'package:totalxproject/features/sort/presentation/provider/sort_provider.dart';
 
 import 'firebase_options.dart';
 
@@ -20,7 +19,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(MyApp());
-  log("SR");
+  
 }
 
 class MyApp extends StatelessWidget {
@@ -32,11 +31,9 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (context) => LoginProvider(),
+          create: (context) => AutheProvider(),
         ),
-        ChangeNotifierProvider(
-          create: (context) => OtpProvider(),
-        ),
+
         ChangeNotifierProvider(
           create: (context) => AddUserProvider(),
         ),
@@ -46,18 +43,13 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) => SearchProvider(),
         ),
-        ChangeNotifierProvider(
-          create: (context) => SortProvider(),
-        ),
+
       ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'Flutter Demo',
-          theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-            useMaterial3: true,
-          ),
-          home: HomePage()
+          home:
+           HomePage()
           //  auth.currentUser != null ? HomePage() : LoginScreen(),
           ),
     );

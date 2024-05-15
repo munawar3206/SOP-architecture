@@ -1,5 +1,4 @@
-class SearchFunction {
-  void search() {
+
     List<String> keywordsBuilder(String convertName) {
       final filteredKeyword =
           convertName.replaceAll(RegExp(r'[^a-zA-Z0-9\s]'), '');
@@ -22,5 +21,3 @@ class SearchFunction {
 
       return substrings;
     }
-  }
-}

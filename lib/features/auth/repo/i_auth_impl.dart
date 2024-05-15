@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import 'package:totalxproject/features/otp/presentation/view/otp_screen.dart';
+import 'package:totalxproject/features/auth/presentation/view/otpscreen/otp_screen.dart';
 
 class LoginRepository {
   factory LoginRepository() {
@@ -44,6 +44,19 @@ Future<void> submitPhoneNum(BuildContext context, TextEditingController phoneNum
   );
   
 }
+ Future<void> submitotpnum(verificationid,otp) async {
 
+    FirebaseAuth auth = FirebaseAuth.instance;
+    try {
+      PhoneAuthCredential credential = PhoneAuthProvider.credential(
+    
+        verificationId:verificationid,
+        smsCode: otp,
+      );
+      await auth.signInWithCredential(credential);
+    } catch (e) {
+      log(e.toString());
+    }
+  }
 
 }

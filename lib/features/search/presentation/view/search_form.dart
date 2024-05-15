@@ -12,9 +12,15 @@ class SearchForm extends StatelessWidget {
     return Consumer<SearchProvider>(
       builder: (context, searchprovider, child) {
         return TextFormField(
+          autofocus: true,
           controller: searchprovider.searchController,
           onChanged: (value) {
-            // homeProvider.search(value);
+            if (value.isNotEmpty) {
+              searchprovider.clearData();
+              searchprovider.getSearchUsers();
+            } else {
+              searchprovider.clearData();
+            }
           },
           decoration: InputDecoration(
             prefixIcon: const Icon(Icons.search),

@@ -1,8 +1,10 @@
+
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
+import 'package:totalxproject/features/auth/presentation/provider/auth_provider.dart';
 import 'package:totalxproject/features/home/presentation/view/home_screen.dart';
-import 'package:totalxproject/features/otp/presentation/provider/otp_screen_provider.dart';
+
 import 'package:totalxproject/general/images/appimages.dart';
 
 class OtpScreen extends StatelessWidget {
@@ -17,7 +19,7 @@ class OtpScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final otpProvider = Provider.of<OtpProvider>(context);
+    final authprovider = Provider.of<AutheProvider>(context);
     return Scaffold(
       backgroundColor: Colors.white,
       body: GestureDetector(
@@ -61,7 +63,7 @@ class OtpScreen extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(left: 15, right: 15),
                           child: Pinput(
-                            controller: otpProvider.otpControllers,
+                            controller: authprovider.otpControllers,
                             length: 6,
                             defaultPinTheme: PinTheme(
                                 width: 55,
@@ -160,7 +162,7 @@ class OtpScreen extends StatelessWidget {
                             ),
                             child: MaterialButton(
                               onPressed: () async {
-                               await otpProvider.getotp(verificationid);
+                               await authprovider.getotp(verificationid);
                                 Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(

@@ -8,6 +8,8 @@ import 'package:totalxproject/features/add_user/repo/i_adduser_impl.dart';
 import 'package:totalxproject/features/home/data/model/usermodel.dart';
 import 'package:totalxproject/features/home/presentation/provider/get_user_provider.dart';
 import 'package:totalxproject/general/images/appimages.dart';
+import 'package:totalxproject/general/service/search.dart';
+import 'package:totalxproject/general/widgets/textform_widget.dart';
 
 class AlertBoxWidget extends StatelessWidget {
   const AlertBoxWidget({
@@ -18,9 +20,7 @@ class AlertBoxWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final formkey = GlobalKey<FormState>();
     final addProvider = Provider.of<AddUserProvider>(context, listen: false);
-
     final getProvider = Provider.of<GetUserProvider>(context, listen: false);
-
     return Form(
       key: formkey,
       child: AlertDialog(
@@ -242,14 +242,24 @@ class AlertBoxWidget extends StatelessWidget {
                     child: MaterialButton(
                       onPressed: () async {
                         if (formkey.currentState!.validate()) ;
-                        // if (addProvider
-                        //     .imageUrl.isEmpty) {
-                        //   ScaffoldMessenger.of(context)
-                        //       .showSnackBar(const SnackBar(
-                        //     content: Text("Please select and Upload Image"),
-                        //   ));
-                        //   return;
-                        // }
+                        if (addProvider.imageUrl.isEmpty ||
+                            addProvider.nameController.text.isEmpty ||
+                            addProvider.ageController.text.isEmpty) {
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(
+                            content: Text("Please select and Upload Image"),
+                          ));
+                          return;
+                        }
+                        addProvider.isLoadimg = true;
+                        if (addProvider.isLoadimg) {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return const Savedialogue();
+                            },
+                          );
+                        }
                         final image = await AddUserRepository()
                             .getUserProfilePicture(File(value.imageUrl));
                         await value.adduser();
@@ -257,14 +267,12 @@ class AlertBoxWidget extends StatelessWidget {
                         getProvider.adduserlocal(UserModel(
                             name: value.nameController.text,
                             image: image,
-                            age: int.parse(value.ageController.text)));
-
-                        value.nameController.clear();
-                        value.ageController.clear();
-                        value.imageUrl = '';
-                        getProvider.isScroll = false;
-
+                            age: int.parse(value.ageController.text), search: keywordsBuilder(value.nameController.text.trim())));
                         Navigator.pop(context);
+                        Navigator.pop(context);
+                        addProvider.isLoadimg = false;
+
+                        addProvider.clearController();
                       },
                       child: const Text(
                         "Save",
@@ -279,39 +287,6 @@ class AlertBoxWidget extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class TextFormFieldWidget extends StatelessWidget {
-  const TextFormFieldWidget({
-    super.key,
-    required this.text,
-    required this.controller,
-  });
-
-  final String text;
-  final TextEditingController controller;
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      controller: controller,
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return "Please enter your name";
-        } else {
-          return null;
-        }
-      },
-      decoration: InputDecoration(
-        hintText: text,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        contentPadding:
-            const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
       ),
     );
   }

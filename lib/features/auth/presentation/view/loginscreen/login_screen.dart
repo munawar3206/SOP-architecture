@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:totalxproject/features/login/presentation/provider/login_provider.dart';
-import 'package:totalxproject/features/login/repo/i_log_impl.dart';
+import 'package:totalxproject/features/auth/presentation/provider/auth_provider.dart';
+import 'package:totalxproject/features/auth/repo/i_auth_impl.dart';
 import 'package:totalxproject/general/images/appimages.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -9,7 +9,7 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final loginProvider = Provider.of<LoginProvider>(context);
+    final loginProvider = Provider.of<AutheProvider>(context);
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(15.0),

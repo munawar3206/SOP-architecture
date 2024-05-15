@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:totalxproject/features/home/data/model/usermodel.dart';
 
 import 'package:totalxproject/features/add_user/repo/i_adduser_impl.dart';
+import 'package:totalxproject/general/service/search.dart';
 
 class AddUserProvider extends ChangeNotifier {
   AddUserRepository addUserRepository = AddUserRepository();
@@ -14,17 +15,16 @@ class AddUserProvider extends ChangeNotifier {
   TextEditingController ageController = TextEditingController();
   String imageUrl = "";
   bool isLoadimg = true;
-// add users
+  //add user
   Future<void> adduser() async {
+    isLoadimg = true;
     try {
-      isLoadimg = true;
-
       final name = nameController.text.trim();
       final age = ageController.text.trim();
       final image =
           await addUserRepository.getUserProfilePicture(File(imageUrl));
 
-      final userdata = UserModel(
+      final userdata = UserModel(search: keywordsBuilder(name),
           name: name, age: int.parse(ageController.text), image: image);
 
       await addUserRepository.addUsers(userdata);
@@ -37,6 +37,12 @@ class AddUserProvider extends ChangeNotifier {
     }
   }
 
+  //clear data from controller
+  void clearController() {
+    nameController.clear();
+    ageController.clear();
+    imageUrl = '';
+  }
   // add images
 
   Future<void> userimage(ImageSource imageSource) async {

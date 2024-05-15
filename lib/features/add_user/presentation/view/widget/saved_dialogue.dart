@@ -1,7 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class SaveDialogue extends StatelessWidget {
-  const SaveDialogue({Key? key}) : super(key: key);
+class Savedialogue extends StatelessWidget {
+  const Savedialogue({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -9,33 +12,27 @@ class SaveDialogue extends StatelessWidget {
       backgroundColor: Colors.transparent,
       elevation: 0,
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(8),
         ),
-        child: Column(
+        child: const Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(
-              Icons.check_circle,
-              color: Colors.green,
-              size: 48,
+            SizedBox(
+              height: 24,
+              width: 24, 
+              child: CupertinoActivityIndicator(),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 10),
             Text(
-              "User data saved successfully!",
+              "Saving your data...",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                color: Colors.blue,
-                fontSize: 15,
+                color: Color.fromARGB(255, 0, 0, 0),
+                fontSize: 14,
               ),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop(); 
-              },
-              child: const Text('OK'),
             ),
           ],
         ),
