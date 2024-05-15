@@ -1,46 +1,41 @@
-
 import 'package:flutter/material.dart';
 
-class savedialogue extends StatelessWidget {
-  const savedialogue({
-    super.key,
-  });
+class SaveDialogue extends StatelessWidget {
+  const SaveDialogue({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      backgroundColor: Colors
-          .transparent, 
+      backgroundColor: Colors.transparent,
       elevation: 0,
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors
-              .white,
-          borderRadius: BorderRadius.circular(
-              10), 
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
         ),
-        child: const Column(
+        child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            SizedBox(
-              height: 36,
-              width: 36,
-              child: CircularProgressIndicator(
-                strokeWidth:
-                    2,
-                valueColor: AlwaysStoppedAnimation<Color>(
-                    Colors.blue),
-              ),
+            const Icon(
+              Icons.check_circle,
+              color: Colors.green,
+              size: 48,
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Text(
-              "Saving your data",
+              "User data saved successfully!",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: Colors.blue,
                 fontSize: 15,
               ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop(); 
+              },
+              child: const Text('OK'),
             ),
           ],
         ),

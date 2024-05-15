@@ -1,12 +1,16 @@
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:totalxproject/features/add_user/presentation/provider/add_user.dart';
+import 'package:totalxproject/features/add_user/presentation/provider/add_user_provider.dart';
 import 'package:totalxproject/features/home/presentation/provider/get_user_provider.dart';
 import 'package:totalxproject/features/home/presentation/view/home_screen.dart';
 import 'package:totalxproject/features/login/presentation/provider/login_provider.dart';
 import 'package:totalxproject/features/otp/presentation/provider/otp_screen_provider.dart';
+import 'package:totalxproject/features/search/presentation/provider/search_provider.dart';
+import 'package:totalxproject/features/sort/presentation/provider/sort_provider.dart';
 
 import 'firebase_options.dart';
 
@@ -16,6 +20,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(MyApp());
+  log("SR");
 }
 
 class MyApp extends StatelessWidget {
@@ -37,6 +42,12 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (context) => GetUserProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => SearchProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => SortProvider(),
         ),
       ],
       child: MaterialApp(

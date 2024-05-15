@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:totalxproject/features/add_user/presentation/view/add_user.dart';
 import 'package:totalxproject/features/home/presentation/provider/get_user_provider.dart';
-import 'package:totalxproject/features/home/presentation/view/widget/sort.dart';
+import 'package:totalxproject/features/home/presentation/view/widget/user_card.dart';
+
+import 'package:totalxproject/features/search/presentation/view/search_page.dart';
+import 'package:totalxproject/features/sort/presentation/provider/sort_provider.dart';
+import 'package:totalxproject/features/sort/presentation/view/sort.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
   @override
   Widget build(BuildContext context) {
-    // final getuserProvider = Provider.of<GetUserProvider>(context);
     return SafeArea(
       child: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
@@ -29,31 +32,50 @@ class HomePage extends StatelessWidget {
           backgroundColor: const Color.fromARGB(255, 233, 233, 233),
           body: Padding(
             padding: const EdgeInsets.all(13.0),
-            child: Consumer<GetUserProvider>(
-              builder: (context, value, child) {
+            child: Consumer2<GetUserProvider, SortProvider>(
+              builder: (context, value, value2, child) {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       children: [
                         Expanded(
-                          child: TextFormField(
-                            controller: value.searchController,
-                            onChanged: (value) {
-                              // homeProvider.search(value);
-                            },
-                            decoration: InputDecoration(
-                              prefixIcon: const Icon(Icons.search),
-                              hintText: "Search by name",
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(35),
-                              ),
-                              contentPadding: const EdgeInsets.symmetric(
-                                vertical: 10,
-                                horizontal: 15,
-                              ),
-                            ),
-                          ),
+                          child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const SearchScreen(),
+                                    ));
+                              },
+                              child: Container(
+                                height: 40,
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                    border: Border.all(),
+                                    borderRadius: BorderRadius.circular(30)),
+                                child: const Padding(
+                                  padding: EdgeInsets.only(left: 5, top: 8),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Icon(
+                                            (Icons.search),
+                                          ),
+                                          SizedBox(
+                                            width: 5,
+                                          ),
+                                          Text("Search Your User")
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              )),
                         ),
                         IconButton(
                           onPressed: () {
@@ -94,8 +116,8 @@ class HomePage extends StatelessWidget {
                     ),
                     Expanded(
                       child: value.userlist.isEmpty
-                          ? Center(
-                              child: Text("No data"),
+                          ? const Center(
+                              child: CircularProgressIndicator(),
                             )
                           : ListView.separated(
                               controller: value.scrollController,
@@ -104,80 +126,25 @@ class HomePage extends StatelessWidget {
                                   height: 5,
                                 );
                               },
-                              itemCount: value.userlist.length + 1,
+                              itemCount: value2.isSorting
+                                  ? value2.sortlist.length
+                                  : value.userlist.length,
                               itemBuilder: (context, index) {
-                                if (index < value.userlist.length) {
-                                  final data = value.userlist[index];
-                                  return Container(
-                                    height: 80,
-                                    width: double.infinity,
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                            left: 10,
-                                            top: 10,
-                                          ),
-                                          child: Row(
-                                            children: [
-                                              CircleAvatar(
-                                                radius: 30,
-                                                backgroundImage:
-                                                    NetworkImage(data.image),
-                                              ),
-                                              SizedBox(
-                                                width: 5,
-                                              ),
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.all(5.0),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      data.name,
-                                                      style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.bold),
-                                                    ),
-                                                    SizedBox(
-                                                      height: 5,
-                                                    ),
-                                                    Text(
-                                                      data.age.toString(),
-                                                      style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.bold),
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  );
-                                } else if (value.userlist.length ==
-                                    value.fetchalluser.length) {
-                                  return SizedBox();
-                                } else {
-                                  return Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 15),
-                                    child: Center(
-                                        child: CircularProgressIndicator()),
-                                  );
-                                }
-                              },
-                            ),
+                                final data = value2.isSorting
+                                    ? value2.sortlist[index]
+                                    : value.userlist[index];
+                                return Column(
+                                  children: [
+                                    Usercard(data: data),
+                                    if (index == value.userlist.length - 1 &&
+                                        value.isMoreDataLoading)
+                                      const Padding(
+                                        padding: EdgeInsets.all(10),
+                                        child: CircularProgressIndicator(),
+                                      )
+                                  ],
+                                );
+                              }),
                     )
                   ],
                 );
@@ -195,7 +162,7 @@ class HomePage extends StatelessWidget {
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
-                  return AlertBoxWidget();
+                  return const AlertBoxWidget();
                 },
               );
             },

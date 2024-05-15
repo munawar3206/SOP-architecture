@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -12,27 +13,28 @@ class AddUserProvider extends ChangeNotifier {
   TextEditingController nameController = TextEditingController();
   TextEditingController ageController = TextEditingController();
   String imageUrl = "";
-
-  Future<void> uploadImage(ImageSource source) async {
-    final ImagePicker picker = ImagePicker();
-    final XFile? image = await picker.pickImage(
-      source: source,
-    );
-    if (image != null) {
-      imageUrl = image.path;
-    }
-    notifyListeners();
-  }
-
+  bool isLoadimg = true;
 // add users
   Future<void> adduser() async {
-    final name = nameController.text.trim();
-    final age = ageController.text.trim();
-    final image = await addUserRepository.getUserProfilePicture(File(imageUrl));
+    try {
+      isLoadimg = true;
 
-    final userdata = UserModel(name: name, age: age, image: image);
-    addUserRepository.addUsers(userdata);
-    notifyListeners();
+      final name = nameController.text.trim();
+      final age = ageController.text.trim();
+      final image =
+          await addUserRepository.getUserProfilePicture(File(imageUrl));
+
+      final userdata = UserModel(
+          name: name, age: int.parse(ageController.text), image: image);
+
+      await addUserRepository.addUsers(userdata);
+      isLoadimg = false;
+      notifyListeners();
+    } catch (e) {
+      print("Error occurred: $e");
+      isLoadimg = false;
+      notifyListeners();
+    }
   }
 
   // add images
@@ -42,7 +44,8 @@ class AddUserProvider extends ChangeNotifier {
     final XFile? image = await picker.pickImage(source: imageSource);
     if (image != null) {
       imageUrl = image.path;
+      log(imageUrl);
+      notifyListeners();
     }
-    notifyListeners();
   }
 }

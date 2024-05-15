@@ -1,8 +1,10 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:totalxproject/features/home/data/model/usermodel.dart';
 
 class AddUserRepository {
@@ -12,11 +14,19 @@ class AddUserRepository {
   AddUserRepository._();
   final CollectionReference firestore =
       FirebaseFirestore.instance.collection('users');
+
   final FirebaseStorage firebaseStorage = FirebaseStorage.instance;
   final firebaseAuth = FirebaseAuth.instance;
-  void addUsers(UserModel user) {
-    final data = user.toMap();
-    firestore.add(data);
+  Future<Either<String, String>> addUsers(UserModel user) async {
+    try {
+      final id = firestore.doc().id;
+
+      await firestore.doc(id).set(user.copyWith(docId: id).toMap());
+      return right("Added Successfully");
+    } catch (e) {
+      log("Error occured : $e");
+      return left("Error Occured");
+    }
   }
 
   Future<String> getUserProfilePicture(File file) async {
