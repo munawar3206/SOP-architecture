@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:totalxproject/features/home/data/model/usermodel.dart';
 import 'package:totalxproject/features/search/repo/i_search_impl.dart';
@@ -12,29 +11,28 @@ class SearchProvider extends ChangeNotifier {
     scrollController.addListener(() {
       if (scrollController.position.pixels ==
           scrollController.position.maxScrollExtent) {
-        getSearchUsers(); 
+        getSearchUsers(); //search scroll
       }
     });
   }
   final ScrollController scrollController = ScrollController();
   SearchRepository searchUserRepository = SearchRepository();
-  List<UserModel> userlist = [];
+  List<UserModel> userlist = []; //userlist
 
   bool isMoreDataLoading = true;
   bool isLoading = false;
 
   Future<void> getSearchUsers() async {
+    isLoading = true;
     final data =
         await searchUserRepository.getSearchUsers(searchController.text.trim());
     data.fold((l) {
-      if (l == "no_data") {
+      if (l == "No user Found") {
+        showMessage(l);
         log(l);
         isMoreDataLoading = false;
-        isLoading = false;
         notifyListeners();
-      } else {
-        showMessage(Colors.black, l);
-      }
+      } else {}
     }, (data) {
       if (data.length != 8) {
         isMoreDataLoading = false;
@@ -42,13 +40,15 @@ class SearchProvider extends ChangeNotifier {
       }
 
       userlist = [...userlist, ...data];
-      isLoading = false;
       log(userlist[0].age.toString());
       notifyListeners();
     });
+    isLoading = false;
+    notifyListeners();
   }
 
   void clearData() {
+    
     searchUserRepository.lastDocs = null;
     isMoreDataLoading = true;
     userlist.clear();

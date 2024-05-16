@@ -1,7 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:totalxproject/features/add_user/presentation/view/add_user.dart';
+import 'package:totalxproject/features/auth/presentation/view/loginscreen/login_screen.dart';
 import 'package:totalxproject/features/home/presentation/provider/get_user_provider.dart';
 import 'package:totalxproject/features/home/presentation/view/widget/user_card.dart';
 
@@ -22,7 +25,14 @@ class HomePage extends StatelessWidget {
             actions: [
               IconButton(
                   tooltip: "Logout",
-                  onPressed: () async {},
+                  onPressed: () async {
+                    await FirebaseAuth.instance.signOut();
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => LoginScreen(),
+                        ));
+                  },
                   icon: const Icon(
                     Icons.logout_outlined,
                     color: Colors.redAccent,
@@ -115,32 +125,39 @@ class HomePage extends StatelessWidget {
                       height: 10,
                     ),
                     Expanded(
-                      child: value.userlist.isEmpty
-                          ? const Center(
-                              child: CupertinoActivityIndicator(),
+                      child: (value.isLoading)
+                          ? Center(
+                              child: CupertinoActivityIndicator(
+                                color: Colors.red,
+                              ),
                             )
-                          : ListView.separated(
-                              controller: value.scrollController,
-                              separatorBuilder: (context, index) {
-                                return const SizedBox(
-                                  height: 5,
-                                );
-                              },
-                              itemCount: value.userlist.length,
-                              itemBuilder: (context, index) {
-                                final data = value.userlist[index];
-                                return Column(
-                                  children: [
-                                    Usercard(data: data),
-                                    if (index == value.userlist.length - 1 &&
-                                        value.isMoreDataLoading)
-                                      const Padding(
-                                        padding: EdgeInsets.all(10),
-                                        child: CupertinoActivityIndicator(),
-                                      )
-                                  ],
-                                );
-                              }),
+                          : value.userlist.isEmpty
+                              ? const Center(
+                                  child: Text("No users"),
+                                )
+                              : ListView.separated(
+                                  controller: value.scrollController,
+                                  separatorBuilder: (context, index) {
+                                    return const SizedBox(
+                                      height: 5,
+                                    );
+                                  },
+                                  itemCount: value.userlist.length,
+                                  itemBuilder: (context, index) {
+                                    final data = value.userlist[index];
+                                    return Column(
+                                      children: [
+                                        Usercard(data: data),
+                                        if (index ==
+                                                value.userlist.length - 1 &&
+                                            value.isMoreDataLoading)
+                                          const Padding(
+                                            padding: EdgeInsets.all(10),
+                                            child: CupertinoActivityIndicator( color: Colors.red,),
+                                          )
+                                      ],
+                                    );
+                                  }),
                     )
                   ],
                 );

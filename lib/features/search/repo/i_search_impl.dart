@@ -19,7 +19,7 @@ class SearchRepository {
          = (lastDocs == null)
             ? await fire
                 .collection('users')
-                .where("search",arrayContains: search.toLowerCase())
+                .where("search",arrayContains: search.toLowerCase().replaceAll(" ", ""))
                 .orderBy("createdAt", descending: true)
                 .limit(8)
                 .get()
@@ -31,7 +31,7 @@ class SearchRepository {
                 .limit(8)
                 .get();
       if (ref.docs.isEmpty) {
-        return left("no_data");
+        return left("No user Found");
       } else {
         lastDocs = ref.docs.last;
         return right(ref.docs.map((e) => UserModel.fromMap(e.data())).toList());

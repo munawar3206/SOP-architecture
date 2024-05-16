@@ -8,9 +8,10 @@ import 'package:totalxproject/features/home/data/model/usermodel.dart';
 
 import 'package:totalxproject/features/add_user/repo/i_adduser_impl.dart';
 import 'package:totalxproject/general/service/search.dart';
+import 'package:totalxproject/general/service/showmessage.dart';
 
 class AddUserProvider extends ChangeNotifier {
-  AddUserRepository addUserRepository = AddUserRepository();
+  AddUserRepository addUserRepository = AddUserRepository(); //service
   TextEditingController nameController = TextEditingController();
   TextEditingController ageController = TextEditingController();
   String imageUrl = "";
@@ -18,23 +19,34 @@ class AddUserProvider extends ChangeNotifier {
   //add user
   Future<void> adduser() async {
     isLoadimg = true;
-    try {
-      final name = nameController.text.trim();
-      final age = ageController.text.trim();
-      final image =
-          await addUserRepository.getUserProfilePicture(File(imageUrl));
 
-      final userdata = UserModel(search: keywordsBuilder(name),
-          name: name, age: int.parse(ageController.text), image: image);
+    final name = nameController.text.trim();
+    final age = ageController.text.trim();
+    final image = await addUserRepository.getUserProfilePicture(File(imageUrl));
 
-      await addUserRepository.addUsers(userdata);
-      isLoadimg = false;
-      notifyListeners();
-    } catch (e) {
-      print("Error occurred: $e");
-      isLoadimg = false;
-      notifyListeners();
-    }
+    final userdata = UserModel(
+        search: keywordsBuilder(name),
+        name: name,
+        age: int.parse(age),
+        image: image);
+
+    final data = await addUserRepository.addUsers(userdata);
+    //either
+    data.fold(
+      (l) {
+        if (l == "Failed! Try again") {
+          showMessage(l);
+        }
+      },
+      (r) {
+        if (r == "Added Successfully") {
+          showMessage(r);
+        }
+      },
+    );
+
+    isLoadimg = false;
+    notifyListeners();
   }
 
   //clear data from controller

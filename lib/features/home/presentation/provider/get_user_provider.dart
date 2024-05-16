@@ -7,6 +7,12 @@ import 'package:totalxproject/general/core/enum.dart';
 import 'package:totalxproject/general/service/showmessage.dart';
 
 class GetUserProvider extends ChangeNotifier {
+  final ScrollController scrollController = ScrollController();
+  GetUserRepository getUserRepository = GetUserRepository();
+  List<UserModel> userlist = [];
+  bool isMoreDataLoading = true;
+  bool isLoading = false;
+  // enum selected for age sort
   AgeType selectvalue = AgeType.all;
   void changevalue(AgeType ageType) {
     selectvalue = ageType;
@@ -22,22 +28,21 @@ class GetUserProvider extends ChangeNotifier {
       }
     });
   }
-  final ScrollController scrollController = ScrollController();
 
-  GetUserRepository getUserRepository = GetUserRepository();
-  List<UserModel> userlist = [];
-
-  bool isMoreDataLoading = true;
+  // get user in age wise & lazy loading too
 
   Future<void> getUser(AgeType ageType) async {
+    isLoading = true;
     final data = await getUserRepository.getUsers(ageType);
     data.fold((l) {
-      if (l == "no_data") {
-        log(l);
+      if (l == "No More data") {
         isMoreDataLoading = false;
         notifyListeners();
+        showMessage(l);
+        log(l);
       } else {
-        showMessage(Colors.black, l);
+        isMoreDataLoading = false;
+        notifyListeners();
       }
     }, (data) {
       if (data.length != 8) {
@@ -49,13 +54,17 @@ class GetUserProvider extends ChangeNotifier {
       log(userlist[0].age.toString());
       notifyListeners();
     });
+    isLoading = false;
+    notifyListeners();
   }
 
+// store locally in list
   void adduserlocal(UserModel userModel) {
     userlist.insert(0, userModel);
     notifyListeners();
   }
 
+// to clear previous data
   void clearData() {
     getUserRepository.lastDocs = null;
     isMoreDataLoading = true;

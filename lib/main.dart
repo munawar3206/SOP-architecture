@@ -1,10 +1,11 @@
-import 'dart:developer';
+
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:totalxproject/features/add_user/presentation/provider/add_user_provider.dart';
+import 'package:totalxproject/features/auth/presentation/view/loginscreen/login_screen.dart';
 import 'package:totalxproject/features/home/presentation/provider/get_user_provider.dart';
 import 'package:totalxproject/features/home/presentation/view/home_screen.dart';
 import 'package:totalxproject/features/auth/presentation/provider/auth_provider.dart';
@@ -49,8 +50,8 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: 'Flutter Demo',
           home:
-           HomePage()
-          //  auth.currentUser != null ? HomePage() : LoginScreen(),
+          //  HomePage()
+           auth.currentUser != null ? HomePage() : LoginScreen(),
           ),
     );
   }

@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:totalxproject/features/add_user/presentation/provider/add_user_provider.dart';
@@ -38,11 +40,12 @@ class AlertBoxWidget extends StatelessWidget {
             Center(
               child: Stack(
                 children: [
-                  Consumer<AddUserProvider>(builder: (context, snapshot, _) {
+                  Consumer<AddUserProvider>(
+                      builder: (context, adduserProvider, child) {
                     return CircleAvatar(
                       radius: 35,
-                      backgroundImage: snapshot.imageUrl.isNotEmpty
-                          ? FileImage(File(snapshot.imageUrl))
+                      backgroundImage: adduserProvider.imageUrl.isNotEmpty
+                          ? FileImage(File(adduserProvider.imageUrl))
                           : AssetImage(Appimages.gallimages)
                               as ImageProvider<Object>,
                     );
@@ -190,6 +193,7 @@ class AlertBoxWidget extends StatelessWidget {
               height: 5,
             ),
             TextFormFieldWidget(
+              type: TextInputType.name,
               text: "Enter name",
               controller: addProvider.nameController,
             ),
@@ -204,6 +208,8 @@ class AlertBoxWidget extends StatelessWidget {
               height: 5,
             ),
             TextFormFieldWidget(
+              // inputFormatter: [TextInputType.number],
+              type: TextInputType.number,
               text: "Enter Age",
               controller: addProvider.ageController,
             ),
@@ -241,13 +247,14 @@ class AlertBoxWidget extends StatelessWidget {
                         color: const Color.fromARGB(255, 49, 73, 255)),
                     child: MaterialButton(
                       onPressed: () async {
-                        if (formkey.currentState!.validate()) ;
+                        if (formkey.currentState!.validate()) ; //validation
                         if (addProvider.imageUrl.isEmpty ||
                             addProvider.nameController.text.isEmpty ||
                             addProvider.ageController.text.isEmpty) {
                           ScaffoldMessenger.of(context)
                               .showSnackBar(const SnackBar(
-                            content: Text("Please select and Upload Image"),
+                            backgroundColor: Colors.red,
+                            content: Text("Please Fill the Fields"),
                           ));
                           return;
                         }
@@ -267,7 +274,9 @@ class AlertBoxWidget extends StatelessWidget {
                         getProvider.adduserlocal(UserModel(
                             name: value.nameController.text,
                             image: image,
-                            age: int.parse(value.ageController.text), search: keywordsBuilder(value.nameController.text.trim())));
+                            age: int.parse(value.ageController.text),
+                            search: keywordsBuilder(
+                                value.nameController.text.trim())));
                         Navigator.pop(context);
                         Navigator.pop(context);
                         addProvider.isLoadimg = false;

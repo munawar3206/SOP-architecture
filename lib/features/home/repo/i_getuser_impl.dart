@@ -15,7 +15,8 @@ class GetUserRepository {
   Future<Either<String, List<UserModel>>> getUsers(AgeType ageType) async {
     try {
       QuerySnapshot<Map<String, dynamic>> ref;
-      if (ageType == AgeType.all) {// all data load
+      if (ageType == AgeType.all) {
+        // all data load
         ref = (lastDocs == null)
             ? await fire
                 .collection('users')
@@ -28,7 +29,8 @@ class GetUserRepository {
                 .startAfterDocument(lastDocs!)
                 .limit(8)
                 .get();
-      } else if (ageType == AgeType.younger) {//younger list load
+      } else if (ageType == AgeType.younger) {
+        //younger list load
         ref = (lastDocs == null)
             ? await fire
                 .collection('users')
@@ -44,24 +46,23 @@ class GetUserRepository {
                 .limit(8)
                 .get();
       } else {
-        ref = (lastDocs == null)//elder load
+        ref = (lastDocs == null) //elder load
             ? await fire
                 .collection('users')
                 .where("age", isGreaterThanOrEqualTo: 60)
-                 .orderBy("age", descending: true)
+                .orderBy("age", descending: true)
                 .limit(8)
                 .get()
             : await fire
                 .collection('users')
-               
                 .where("age", isGreaterThanOrEqualTo: 60)
-                 .orderBy("age", descending: true)
+                .orderBy("age", descending: true)
                 .startAfterDocument(lastDocs!)
                 .limit(8)
                 .get();
       }
       if (ref.docs.isEmpty) {
-        return left("no_data");
+        return left("No More data");
       } else {
         lastDocs = ref.docs.last;
         return right(ref.docs.map((e) => UserModel.fromMap(e.data())).toList());
