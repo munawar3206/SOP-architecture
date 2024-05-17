@@ -1,11 +1,9 @@
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:totalxproject/features/home/data/model/usermodel.dart';
-
 import 'package:totalxproject/features/add_user/repo/i_adduser_impl.dart';
 import 'package:totalxproject/general/service/search.dart';
 import 'package:totalxproject/general/service/showmessage.dart';
@@ -18,7 +16,7 @@ class AddUserProvider extends ChangeNotifier {
   bool isLoadimg = true;
   //add user
   Future<void> adduser() async {
-    isLoadimg = true;
+    isLoadimg = true; //when save 
 
     final name = nameController.text.trim();
     final age = ageController.text.trim();
@@ -31,7 +29,6 @@ class AddUserProvider extends ChangeNotifier {
         image: image);
 
     final data = await addUserRepository.addUsers(userdata);
-    //either
     data.fold(
       (l) {
         if (l == "Failed! Try again") {

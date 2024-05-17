@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:fpdart/fpdart.dart';
 import 'package:totalxproject/features/home/data/model/usermodel.dart';
 import 'package:totalxproject/features/home/repo/i_getuser_impl.dart';
 import 'package:totalxproject/general/core/enum.dart';

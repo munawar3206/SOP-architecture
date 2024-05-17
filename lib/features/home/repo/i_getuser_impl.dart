@@ -16,7 +16,7 @@ class GetUserRepository {
     try {
       QuerySnapshot<Map<String, dynamic>> ref;
       if (ageType == AgeType.all) {
-        // all data load
+        // all data load with lazy load
         ref = (lastDocs == null)
             ? await fire
                 .collection('users')
@@ -67,12 +67,12 @@ class GetUserRepository {
         lastDocs = ref.docs.last;
         return right(ref.docs.map((e) => UserModel.fromMap(e.data())).toList());
       }
-    } catch (e) {
+    }  catch (e) {
       log(e.toString());
       return left("An error occured while geting users");
     }
   }
-  
+
 //delete from firebase
   Future<Either<String, String>> deleteUser(String id) async {
     try {
