@@ -72,4 +72,16 @@ class GetUserRepository {
       return left("An error occured while geting users");
     }
   }
+  
+//delete from firebase
+  Future<Either<String, String>> deleteUser(String id) async {
+    try {
+      await FirebaseFirestore.instance.collection("users").doc(id).delete();
+
+      return right("Delete Successfully");
+    } catch (e) {
+      log("Error deleting user: $e");
+      return left("Failed!");
+    }
+  }
 }

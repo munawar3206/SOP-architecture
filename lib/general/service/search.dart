@@ -1,6 +1,6 @@
 // Search function 
 
-keywordsBuilder(String caseNumber) {
+List<String>keywordsBuilder(String caseNumber) {
   List<String> caseSearchList = <String>[];
   String temp = "";
 
@@ -20,3 +20,4 @@ keywordsBuilder(String caseNumber) {
   }
   return caseSearchList.toSet().toList();
 }
+ 

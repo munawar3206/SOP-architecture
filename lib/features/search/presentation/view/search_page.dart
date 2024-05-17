@@ -79,7 +79,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                     final data = value.userlist[index];
                                     return Column(
                                       children: [
-                                        Usercard(data: data),
+                                        Usercard(data: data, index: index),
                                         if (index ==
                                                 value.userlist.length - 1 &&
                                             value.isMoreDataLoading)

@@ -126,7 +126,7 @@ class HomePage extends StatelessWidget {
                     ),
                     Expanded(
                       child: (value.isLoading)
-                          ? Center(
+                          ? const Center(
                               child: CupertinoActivityIndicator(
                                 color: Colors.red,
                               ),
@@ -147,13 +147,18 @@ class HomePage extends StatelessWidget {
                                     final data = value.userlist[index];
                                     return Column(
                                       children: [
-                                        Usercard(data: data),
+                                        Usercard(
+                                          data: data,
+                                          index: index,
+                                        ),
                                         if (index ==
                                                 value.userlist.length - 1 &&
                                             value.isMoreDataLoading)
                                           const Padding(
                                             padding: EdgeInsets.all(10),
-                                            child: CupertinoActivityIndicator( color: Colors.red,),
+                                            child: CupertinoActivityIndicator(
+                                              color: Colors.red,
+                                            ),
                                           )
                                       ],
                                     );

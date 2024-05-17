@@ -1,5 +1,3 @@
-
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -9,9 +7,7 @@ import 'package:totalxproject/features/auth/presentation/view/loginscreen/login_
 import 'package:totalxproject/features/home/presentation/provider/get_user_provider.dart';
 import 'package:totalxproject/features/home/presentation/view/home_screen.dart';
 import 'package:totalxproject/features/auth/presentation/provider/auth_provider.dart';
-
 import 'package:totalxproject/features/search/presentation/provider/search_provider.dart';
-
 import 'firebase_options.dart';
 
 void main() async {

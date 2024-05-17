@@ -17,20 +17,16 @@ class SearchForm extends StatelessWidget {
           controller: searchprovider.searchController,
           onChanged: (value) {
             EasyDebounce.debounce(
-                'my-debouncer', // <-- An ID for this particular debouncer
-                const Duration(milliseconds: 500), // <-- The debounce duration
+                'my-debouncer',
+                const Duration(milliseconds: 500), 
                 () {
               if (value.isNotEmpty) {
-                //search-----------
                 searchprovider.clearData();
-
-                searchprovider.getSearchUsers();
-                 
+                searchprovider.getSearchUsers();                
               } else {
-                searchprovider.clearData();
-              
+                searchprovider.clearData();              
               }
-            } // <-- The target method
+            } 
                 );
           },
           decoration: InputDecoration(

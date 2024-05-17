@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:totalxproject/features/home/data/model/usermodel.dart';
 import 'package:totalxproject/features/home/repo/i_getuser_impl.dart';
 import 'package:totalxproject/general/core/enum.dart';
@@ -10,8 +11,8 @@ class GetUserProvider extends ChangeNotifier {
   final ScrollController scrollController = ScrollController();
   GetUserRepository getUserRepository = GetUserRepository();
   List<UserModel> userlist = [];
-  bool isMoreDataLoading = true;
-  bool isLoading = false;
+  bool isMoreDataLoading = true; //more limit
+  bool isLoading = false; //initial load
   // enum selected for age sort
   AgeType selectvalue = AgeType.all;
   void changevalue(AgeType ageType) {
@@ -63,6 +64,11 @@ class GetUserProvider extends ChangeNotifier {
     userlist.insert(0, userModel);
     notifyListeners();
   }
+// delete
+  void deleteuserlocally(index) {
+    userlist.removeAt(index);
+    notifyListeners();
+  }
 
 // to clear previous data
   void clearData() {
@@ -70,5 +76,25 @@ class GetUserProvider extends ChangeNotifier {
     isMoreDataLoading = true;
     userlist.clear();
     notifyListeners();
+  }
+
+  Future<void> deletelist(String id,index) async {
+    final data = await getUserRepository.deleteUser(id);
+    data.fold(
+      (l) {
+        if (l == "Failed!") {
+          notifyListeners();
+          showMessage(l);
+          log(l);
+        }
+      },
+      (r) {
+        if (r == "Delete Successfully") {
+          deleteuserlocally(index);
+          showMessage(r);
+          log(r);
+        }
+      },
+    );
   }
 }

@@ -7,18 +7,16 @@ class TextFormFieldWidget extends StatelessWidget {
     required this.text,
     required this.controller,
     required this.type,
-    // this.inputFormatter,
   });
 
   final String text;
   final TextEditingController controller;
   final TextInputType type;
-  // final inputFormatter;
+
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      // inputFormatters: inputFormatter,
       keyboardType: type,
       controller: controller,
       validator: (value) {
